@@ -9,15 +9,8 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid Loaded="Grid_Loaded">
-        <ListView HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,15" HorizontalContentAlignment="Stretch" FlowDirection="LeftToRight" UseLayoutRounding="True">
-            <ListViewItem HorizontalContentAlignment="Stretch">
-                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                    <Grid>
-                        <SymbolIcon Symbol="Add" HorizontalAlignment="Left"/>
-                        <TextBlock HorizontalAlignment="Center" Text="Добавить"/>
-                    </Grid>
-                </Button>
-            </ListViewItem>
+        <ListView x:Name="list" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,15" HorizontalContentAlignment="Stretch" FlowDirection="LeftToRight" UseLayoutRounding="True" MinWidth="1000">
+
         </ListView>
         <TextBlock x:Name="answTextBlock" Text="123" FontSize="10" TextAlignment="Start" FocusVisualPrimaryBrush="#FF7C7C7C" VerticalAlignment="Bottom" Height="15" HorizontalAlignment="Stretch"/>
     </Grid>
