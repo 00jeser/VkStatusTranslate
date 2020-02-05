@@ -19,14 +19,11 @@ using System.Diagnostics;
 using Windows.System.Diagnostics;
 using Windows.UI;
 using Windows.System;
+using Windows.UI.Core.Preview;
 
-// Документацию по шаблону элемента "Пустая страница" см. по адресу https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x419
 
 namespace VkStatusTranslate
 {
-    /// <summary>
-    /// Пустая страница, которую можно использовать саму по себе или для перехода внутри фрейма.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         public MainPage()
@@ -36,20 +33,35 @@ namespace VkStatusTranslate
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
+            singlton.api.Authorize(new ApiAuthParams()
+            {
+                Login = singlton.login,
+                Password = singlton.password,
+                ApplicationId = singlton.appId,
+                Settings = Settings.All
+            });
             DiagnosticAccessStatus diagnosticAccessStatus = await AppDiagnosticInfo.RequestAccessAsync();
+            
+            DispatcherTimer timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 20, 0) }; // 1 секунда
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+
+        private async void Timer_Tick(object sender, object e)
+        {
             Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
             try
             {
                 var s = "";
                 Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("procs.txt");
+                list.Items.Clear();
                 foreach (var i in (await Windows.Storage.FileIO.ReadTextAsync(sampleFile)).Split('\n')) 
                 {
                     foreach (ProcessDiagnosticInfo ii in ProcessDiagnosticInfo.GetForProcesses()) 
                     {
-                        s += " " + ii.ExecutableFileName;
                         if (i.Split('~')[0] == ii.ExecutableFileName) 
                         {
-                            singlton.status = i.Split('~')[1];
+                            s = i.Split('~')[1];
                         }
                     }
                     Grid g = new Grid() { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
@@ -58,8 +70,9 @@ namespace VkStatusTranslate
                     g.Children.Add(new TextBlock() { Text = i.Split('~')[1], HorizontalAlignment = HorizontalAlignment.Right });
                     list.Items.Add(lvi);
                 }
-                answTextBlock.Text = singlton.status;
-                //await Windows.Storage.FileIO.WriteTextAsync(sampleFile, "Test~System\nexplorer.exe~в проводнике");
+                singlton.status = s;
+                answTextBlock.Text = s;
+                //await Windows.Storage.FileIO.WriteTextAsync(sampleFile, "Test~System\nexplorer.exe~играет в проводник windows");
             }
             catch (Exception ex) 
             {
@@ -67,17 +80,11 @@ namespace VkStatusTranslate
                 answTextBlock.Text = ex.Message;
                 await Windows.Storage.FileIO.WriteTextAsync(sampleFile, "Test~System");
             }
+        }
 
-            /*VkApi api = new VkApi();
-            api.Authorize(new ApiAuthParams()
-            {
-                Login = singlton.login,
-                Password = singlton.password,
-                ApplicationId = singlton.appId,
-                Settings = Settings.All
-            });
-            var respone = api.Status.Set("test1");
-            answTextBlock.Text = respone.ToString();*/
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            singlton.status = "";
         }
     }
 }
