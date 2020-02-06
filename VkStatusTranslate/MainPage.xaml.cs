@@ -116,8 +116,27 @@ namespace VkStatusTranslate
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var a = new login();
-            await a.ShowAsync();
+            /*var a = new login();
+            await a.ShowAsync();*/
+            loginGrd.Width = loginGrd.Width == 315 ? 0 : 315;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                singlton.api.Authorize(new ApiAuthParams()
+                {
+                    Login = singlton.login,
+                    Password = singlton.password,
+                    ApplicationId = singlton.appId,
+                    Settings = Settings.All
+                });
+            }
+            catch (Exception ex)
+            {
+                answTextBlock.Text = ex.Message;
+            }
         }
     }
 }

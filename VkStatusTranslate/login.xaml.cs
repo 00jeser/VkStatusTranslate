@@ -29,13 +29,23 @@ namespace VkStatusTranslate
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-           singlton.api.Authorize(new ApiAuthParams()
+            try
+            {
+                singlton.api.Authorize(new ApiAuthParams()
                 {
-                    Login = singlton.login,
-                    Password = singlton.password,
+                    Login = loginTB.Text,
+                    Password = passwordTB.Text,
                     ApplicationId = singlton.appId,
-                    Settings = Settings.Status
+                    Settings = Settings.All
                 });
+            }
+            catch (Exception ex)
+            {
+                Title = ex.Message+"\n"+ loginTB.Text + passwordTB.Text;
+                passwordTB.BorderBrush = new SolidColorBrush(Colors.Red);
+                loginTB.BorderBrush = new SolidColorBrush(Colors.Red);
+                args.Cancel = true;
+            }
         }
 
     }
