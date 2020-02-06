@@ -95,7 +95,7 @@ namespace VkStatusTranslate
             {
                 Windows.Storage.StorageFile sampleFile = await storageFolder.CreateFileAsync("procs.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
                 answTextBlock.Text = ex.Message;
-                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, "Test~System");
+                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, "default~ ");
             }
             catch (Exception ex)
             {
