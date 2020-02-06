@@ -41,7 +41,7 @@ namespace VkStatusTranslate
                 Settings = Settings.All
             });
             DiagnosticAccessStatus diagnosticAccessStatus = await AppDiagnosticInfo.RequestAccessAsync();
-            
+
             DispatcherTimer timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 20, 0) }; // 1 секунда
             timer.Tick += Timer_Tick;
             timer.Start();
@@ -55,36 +55,56 @@ namespace VkStatusTranslate
                 var s = "";
                 Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("procs.txt");
                 list.Items.Clear();
-                foreach (var i in (await Windows.Storage.FileIO.ReadTextAsync(sampleFile)).Split('\n')) 
+                foreach (var i in (await Windows.Storage.FileIO.ReadTextAsync(sampleFile)).Split('\n'))
                 {
-                    foreach (ProcessDiagnosticInfo ii in ProcessDiagnosticInfo.GetForProcesses()) 
+                    if (i.IndexOf('~') != -1)
                     {
-                        if (i.Split('~')[0] == ii.ExecutableFileName) 
+                        if (i.Split('~')[0] == "default" && s == "")
                         {
                             s = i.Split('~')[1];
                         }
+                        else
+                        {
+                            foreach (ProcessDiagnosticInfo ii in ProcessDiagnosticInfo.GetForProcesses())
+                            {
+                                if (i.Split('~')[0] == ii.ExecutableFileName)
+                                {
+                                    s = i.Split('~')[1];
+                                }
+                            }
+                        }
+                        Grid g = new Grid() { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+                        ListViewItem lvi = new ListViewItem() { Content = g, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch };
+                        g.Children.Add(new TextBlock() { Text = i.Split('~')[0], HorizontalAlignment = HorizontalAlignment.Left });
+                        g.Children.Add(new TextBlock() { Text = i.Split('~')[1], HorizontalAlignment = HorizontalAlignment.Right });
+                        list.Items.Add(lvi);
                     }
-                    Grid g = new Grid() { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
-                    ListViewItem lvi = new ListViewItem() { Content = g, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch };
-                    g.Children.Add(new TextBlock() { Text = i.Split('~')[0], HorizontalAlignment = HorizontalAlignment.Left });
-                    g.Children.Add(new TextBlock() { Text = i.Split('~')[1], HorizontalAlignment = HorizontalAlignment.Right });
-                    list.Items.Add(lvi);
                 }
                 singlton.status = s;
                 answTextBlock.Text = s;
                 //await Windows.Storage.FileIO.WriteTextAsync(sampleFile, "Test~System\nexplorer.exe~играет в проводник windows");
             }
-            catch (Exception ex) 
+            catch (FileNotFoundException ex)
             {
                 Windows.Storage.StorageFile sampleFile = await storageFolder.CreateFileAsync("procs.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
                 answTextBlock.Text = ex.Message;
                 await Windows.Storage.FileIO.WriteTextAsync(sampleFile, "Test~System");
+            }
+            catch (Exception ex)
+            {
+                answTextBlock.Text = ex.Message;
             }
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
             singlton.status = "";
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var a = new AddProcess();
+            await a.ShowAsync();
         }
     }
 }
