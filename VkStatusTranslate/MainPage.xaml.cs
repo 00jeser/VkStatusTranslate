@@ -33,13 +33,20 @@ namespace VkStatusTranslate
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            singlton.api.Authorize(new ApiAuthParams()
+            try
             {
-                Login = singlton.login,
-                Password = singlton.password,
-                ApplicationId = singlton.appId,
-                Settings = Settings.All
-            });
+                singlton.api.Authorize(new ApiAuthParams()
+                {
+                    Login = singlton.login,
+                    Password = singlton.password,
+                    ApplicationId = singlton.appId,
+                    Settings = Settings.All
+                });
+            }
+            catch (Exception ex)
+            {
+                answTextBlock.Text = ex.Message;
+            }
             DiagnosticAccessStatus diagnosticAccessStatus = await AppDiagnosticInfo.RequestAccessAsync();
 
             DispatcherTimer timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 20, 0) }; // 1 секунда
@@ -104,6 +111,12 @@ namespace VkStatusTranslate
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             var a = new AddProcess();
+            await a.ShowAsync();
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var a = new login();
             await a.ShowAsync();
         }
     }

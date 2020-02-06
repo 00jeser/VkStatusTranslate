@@ -9,11 +9,14 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Unloaded="Page_Unloaded">
 
     <Grid Loaded="Grid_Loaded">
-        <Button HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Click="Button_Click">
+        <Button HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Click="Button_Click" Margin="0,0,30,0">
             <Grid Width="85" Height="28" Margin="0,-5,0,0">
                 <SymbolIcon Symbol="Add" HorizontalAlignment="Left"/>
                 <TextBlock Text="Добавить" HorizontalAlignment="Right" Margin="0,1.5,0,0"/>
             </Grid>
+        </Button>
+        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Height="30" Click="Button_Click_1" Margin="0,0,0,0" Width="30">
+            <SymbolIcon Symbol="People" HorizontalAlignment="Left" Margin="-5,-5,-5,-5"/>
         </Button>
         <ListView x:Name="list" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,30,0,15" HorizontalContentAlignment="Stretch" FlowDirection="LeftToRight" UseLayoutRounding="True" MinWidth="1000">
 
