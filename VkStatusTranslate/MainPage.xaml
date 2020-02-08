@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Unloaded="Page_Unloaded">
     <Page.Background>
-        <AcrylicBrush TintColor="#CC000000" TintOpacity="0.5" TintTransitionDuration="00:00:01.5000000" Opacity="0.5" BackgroundSource="HostBackdrop"/>
+        <AcrylicBrush TintColor="#CC000000" TintOpacity="0.5" TintTransitionDuration="00:00:01.5000000" Opacity="0.5" BackgroundSource="HostBackdrop" FallbackColor="#FF212121"/>
     </Page.Background>
 
     <Grid Loaded="Grid_Loaded">

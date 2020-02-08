@@ -20,7 +20,7 @@ using Windows.System.Diagnostics;
 using Windows.UI;
 using Windows.System;
 using Windows.UI.Core.Preview;
-
+using Windows.ApplicationModel.Core;
 
 namespace VkStatusTranslate
 {
@@ -35,10 +35,13 @@ namespace VkStatusTranslate
         {
             try
             {
+                Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("pass.txt");
+                var lp = (await Windows.Storage.FileIO.ReadTextAsync(sampleFile)).Split('\n');
                 singlton.api.Authorize(new ApiAuthParams()
                 {
-                    Login = singlton.login,
-                    Password = singlton.password,
+                    Login = lp[1],
+                    Password = lp[0],
                     ApplicationId = singlton.appId,
                     Settings = Settings.All
                 });
@@ -48,6 +51,7 @@ namespace VkStatusTranslate
                 answTextBlock.Text = ex.Message;
             }
             DiagnosticAccessStatus diagnosticAccessStatus = await AppDiagnosticInfo.RequestAccessAsync();
+            var requestStatus = await Windows.ApplicationModel.Background.BackgroundExecutionManager.RequestAccessAsync();
 
             DispatcherTimer timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 20, 0) }; // 1 секунда
             timer.Tick += Timer_Tick;
@@ -87,7 +91,8 @@ namespace VkStatusTranslate
                         list.Items.Add(lvi);
                     }
                 }
-                singlton.status = s;
+                if (s != singlton.status)
+                    singlton.status = s;
                 answTextBlock.Text = s;
                 //await Windows.Storage.FileIO.WriteTextAsync(sampleFile, "Test~System\nexplorer.exe~играет в проводник windows");
             }
@@ -121,17 +126,27 @@ namespace VkStatusTranslate
             loginGrd.Width = loginGrd.Width == 315 ? 0 : 315;
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
             try
             {
-                singlton.api.Authorize(new ApiAuthParams()
+                /*singlton.api.Authorize(new ApiAuthParams()
                 {
                     Login = singlton.login,
                     Password = singlton.password,
                     ApplicationId = singlton.appId,
                     Settings = Settings.All
-                });
+                });*/
+                Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("pass.txt");
+                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, passwordTB.Text + "\n" + loginTB.Text);
+                await CoreApplication.RequestRestartAsync("-fastInit -level 1 -foo");
+            }
+            catch (FileNotFoundException)
+            {
+                Windows.Storage.StorageFile sampleFile = await storageFolder.CreateFileAsync("pass.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, passwordTB.Text + "\n" + loginTB.Text);
+                Process.GetCurrentProcess().Close();
             }
             catch (Exception ex)
             {

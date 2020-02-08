@@ -10,13 +10,13 @@
   <Identity
     Name="79a0ff3b-cc4e-4159-ba5d-b81d1249e802"
     Publisher="CN=00jes"
-    Version="0.1.0.0" />
+    Version="0.2.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="79a0ff3b-cc4e-4159-ba5d-b81d1249e802" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>VkStatusTranslate</DisplayName>
-    <PublisherDisplayName>00jes</PublisherDisplayName>
+    <PublisherDisplayName>00jeser</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
