@@ -53,7 +53,7 @@ namespace VkStatusTranslate
             DiagnosticAccessStatus diagnosticAccessStatus = await AppDiagnosticInfo.RequestAccessAsync();
             var requestStatus = await Windows.ApplicationModel.Background.BackgroundExecutionManager.RequestAccessAsync();
 
-            DispatcherTimer timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 20, 0) }; // 1 секунда
+            DispatcherTimer timer = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 0, 20, 0) }; 
             timer.Tick += Timer_Tick;
             timer.Start();
         }
@@ -139,13 +139,13 @@ namespace VkStatusTranslate
                     Settings = Settings.All
                 });*/
                 Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("pass.txt");
-                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, passwordTB.Text + "\n" + loginTB.Text);
+                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, passwordTB.Password + "\n" + loginTB.Text);
                 await CoreApplication.RequestRestartAsync("-fastInit -level 1 -foo");
             }
             catch (FileNotFoundException)
             {
                 Windows.Storage.StorageFile sampleFile = await storageFolder.CreateFileAsync("pass.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
-                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, passwordTB.Text + "\n" + loginTB.Text);
+                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, passwordTB.Password + "\n" + loginTB.Text);
                 Process.GetCurrentProcess().Close();
             }
             catch (Exception ex)
